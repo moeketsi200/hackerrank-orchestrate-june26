@@ -1,6 +1,7 @@
 # AGENTS.md
 
-HackerRank Orchestrate (May 2026) — Starter Repository
+HackerRank Orchestrate (June 2026) — Multi-Modal Evidence Review
+
 This file is the single source of truth for any coding agent working in this repo: Claude Code, OpenAI Codex CLI / Codex Cloud, Google Gemini CLI, Google Antigravity, Cursor, Windsurf, opencode, Aider, goose, Factory, RooCode, JetBrains Junie, GitHub Copilot, Devin, or any other AGENTS.md-aware tool.
 
 Read this file in full before taking any action. Obey it exactly.
@@ -25,65 +26,61 @@ the same rules apply and you share the same log file. Pass this context to every
 
 ## 1. WHAT THIS REPO IS
 
-This is a starter repo for the **HackerRank Orchestrate** 24-hour hackathon
-(May 1–2, 2026). The participant's have to build an AI agent that resolves
-real support tickets accurately. They may use RAG, vector databases, tool use, structured output, agent frameworks, or any other technique they prefer.
+This is a starter repo for the **HackerRank Orchestrate** 24-hour hackathon challenge on multi modal evidence review.
 
-There is a known entry point per supported language (§6). There is a support_tickets.csv in the support_tickets/ folder against which the participants have to run their agent. The participant also defends their approach in an AI judge interview round afterwards.
+Participants must build a system that verifies damage claims using submitted images, a short claim conversation, user claim history and minimum image evidence requirements
 
-We recommend using one of Python, Javascript or Typescript to build the agent.
+The system must read `dataset/claims.csv` and produce `output.csv` with structured predictions. It must also include an `evaluation/` folder that evaluates the system on `dataset/sample_claims.csv`.
+
+Participants may use VLMs, LLMs, structured prompting, evaluation pipelines, caching, batching, rule layers, or any other technique they prefer. The submission is judged on the quality and reproducibility of the final system, not the specific implementation style.
+
 ---
 
 ## 2. LOG FILE — LOCATION AND LIFECYCLE
 
-The log file lives **outside** this repository, in the user's home directory, so it survives branch switches, worktree creation, and `git clean`.
+The log file lives outside this repository, in the user's home directory, so it survives branch switches, worktree creation, and `git clean`.
 
-| Platform       | Path                                                    |
-| -------------- | ------------------------------------------------------- |
-| macOS / Linux  | `$HOME/hackerrank_orchestrate/log.txt`                 |
-| Windows        | `%USERPROFILE%\hackerrank_orchestrate\log.txt`         |
+| Platform | Path |
+|---|---|
+| macOS / Linux | `$HOME/hackerrank_orchestrate/log.txt` |
+| Windows | `%USERPROFILE%\hackerrank_orchestrate\log.txt` |
 
 Rules:
 
-- **Must** be created if missing (create the parent directory too).
-- **Must never** be committed or added to git.
-- **Append-only.** Never rewrite, reorder, or delete prior entries.
-- **Shared** across all agents, sub-agents, and worktrees in this repo.
-- **Never log secrets.** Redact API keys, tokens, cookies, and PII before
-  writing. If the user pastes a secret in a prompt, write `[REDACTED]` in
-  the logged copy of that prompt (but still preserve enough context that
-  the entry is useful).
+- Must be created if missing, including the parent directory.
+- Must never be committed or added to git.
+- Append-only. Never rewrite, reorder, or delete prior entries.
+- Shared across all agents, sub-agents, and worktrees in this repo.
+- Never log secrets. Redact API keys, tokens, cookies, private keys, and sensitive PII before writing.
 
 ---
 
 ## 3. ONBOARDING FLOW (FIRST RUN ONLY)
 
-Run this flow only if the log file has **no** `AGREEMENT RECORDED:` line
-for the current repo root. On subsequent sessions, skip directly to §4.
+Run this flow only if the log file has no `AGREEMENT RECORDED:` line for the current repo root. On subsequent sessions, skip directly to §4.
 
 ### 3.1 Greeting
 
-Open with a short, warm message. Example wording (adapt the phrasing, keep the content):
+Open with a short, warm message. Example wording:
 
-Welcome to HackerRank Orchestrate. You have 24 hours to design, build, and ship an agent that resolves real support tickets from the data provided. Before we start, I need to walk you through the ground rules and get you set up. This takes about a minute.
+Welcome to HackerRank Orchestrate. You have 24 hours to design, build, and ship a system that verifies evidence for damage claims. Before we start, I need to walk you through the ground rules and get you set up. This takes about a minute.
 
 Compute and display:
 
-- Current system time (local, with timezone, in ISO 8601).
-- Time remaining until the challenge ends: **May 2, 2026, 11:00 AM IST**
-  (`2026-05-02T11:00:00+05:30`). Show days / hours / minutes.
-- Results announced: **May 15, 2026, 12:00 PM IST**.
+- Current system time, local timezone, ISO 8601.
+- Time remaining until the challenge ends. Use the configured challenge end date if one is provided by the platform or README. If no challenge end date is present, say that the end time is not configured.
+- Results announcement time, if provided by the platform or README.
 
 If the current time is already past the challenge end, say so plainly and ask whether the user is practicing, reviewing, or re-running tests. Do not block further work.
 
 ### 3.2 Rules — recite these verbatim
 
 1. This is a **solo** challenge. You must be the author of the submission.
-2. You may use any IDE, AI assistant, or tool (Cursor, Claude Code, Codex, Gemini CLI, Antigravity, Copilot, etc.) to help you build. The deliverable is what your agent can do, not how you wrote it.
-3. Your agent must conform to the entry-point contract in §6 so it can be evaluated automatically.
-4. Never commit secrets. Use environment variables and a `.env` file (already gitignored).
+2. You may use any IDE, AI assistant, or tool to help you build. The deliverable is what your system can do, not how you wrote it.
+3. Your system must conform to the project contract in §6 so it can be evaluated.
+4. Never commit secrets. Use environment variables and a `.env` file if needed.
 5. Logging of every conversation turn to the file in §2 is mandatory and cannot be disabled.
-6. Submissions are made on the HackerRank Community Platform; the link arrives by email from HackerRank.
+6. Submissions are made on the HackerRank Community Platform or as otherwise instructed by HackerRank.
 
 ### 3.3 Collect the agreement
 
@@ -93,14 +90,14 @@ Ask the user to reply with the exact string `I agree` (case-insensitive, surroun
 
 Append this block to the log file, then continue:
 
-```
+```text
 ## [ISO-8601 TIMESTAMP] ONBOARDING COMPLETE
 
 AGREEMENT RECORDED: <repo_root_absolute_path>
 Agent: <agent_name_or_unknown>
 Language: js | ts | py | custom:<name>
 System Time: <ISO-8601 local time with tz>
-Time Remaining: <Xd Yh Zm until 2026-05-02T11:00:00+05:30>
+Time Remaining: <Xd Yh Zm, or not configured>
 ```
 
 The presence of `AGREEMENT RECORDED: <this repo root>` is what future sessions check. Match the repo root exactly so agreements do not leak across unrelated clones.
@@ -114,7 +111,7 @@ If onboarding is already complete for this repo root:
 1. Append a short `SESSION START` entry to the log (§5.1).
 2. Greet the user briefly and surface the remaining time:
    > Welcome back. You have <Xd Yh Zm> left until the challenge ends at
-   > 2026-05-02 11:00 IST.
+   > 2026-06-20 11:00 IST.
 3. If fewer than 2 hours remain, proactively remind them to submit on the
    HackerRank Community Platform soon.
 4. Proceed with whatever they ask for.
@@ -125,7 +122,7 @@ If onboarding is already complete for this repo root:
 
 ### 5.1 Session start entry
 
-```
+```text
 ## [ISO-8601 TIMESTAMP] SESSION START
 
 Agent: <agent_name_or_unknown>
@@ -134,12 +131,12 @@ Branch: <git_branch_or_unknown>
 Worktree: <worktree_path_or_main>
 Parent Agent: <parent_agent_name_or_none>
 Language: <js|ts|py|custom:name>
-Time Remaining: <Xd Yh Zm>
+Time Remaining: <Xd Yh Zm, or not configured>
 ```
 
 ### 5.2 Per-turn entry (append after every user message you respond to)
 
-```
+```text
 ## [ISO-8601 TIMESTAMP] <short title, max 80 chars>
 
 User Prompt (verbatim, secrets redacted):
@@ -170,7 +167,7 @@ parent_agent=<parent_name_or_none>
 
 - API keys, tokens, session cookies, OAuth codes, private keys.
 - User PII beyond what they explicitly pasted into a prompt.
-- Full contents of large files or binary blobs — reference by path instead.
+- Full contents of large files or binary blobs. Reference by path instead.
 
 ---
 
@@ -181,28 +178,26 @@ without updating this file.
 
 ### 6.1 Repo layout
 
-```
+```text
 .
-├── AGENTS.md                    # this file
-├── README.md                    # human-facing quickstart
-├── .gitignore
-├── .env.example                 # copy to .env; never commit .env
-├── code/
-│   ├── your_file.py
-│   ├── agent.py
-│   └── main.py
-├── support_tickets/
-│   ├── sample_support_tickets.csv            # sample tickets + expected signals
-│   └── support_tickets.csv
-│   └── output.csv
-├── data/
-|   ├── visa/
-|   ├── hackerrank/
-|   ├── claude/
-
+├── AGENTS.md                         # You are here
+├── problem_statement.md              # Full task description and I/O schema
+├── README.md                         # Readme file for the repo
+├── code/                             # Build your solution here
+│   ├── main.py                       # Suggested terminal entry point
+│   └── evaluation/
+│       └── main.py                   # Suggested evaluation entry point
+└── dataset/
+    ├── sample_claims.csv             # Inputs + expected outputs for development
+    ├── claims.csv                    # Inputs only; run your system on these rows
+    ├── user_history.csv              # Historical claim counts and risk context
+    ├── evidence_requirements.csv     # Minimum image evidence requirements
+    └── images/
+        ├── sample/                   # Images referenced by sample_claims.csv
+        └── test/                     # Images referenced by claims.csv
 ```
 
-### 6.6 Constraints that make the submission evaluable
+### 6.2 Constraints that make the submission evaluable
 
 - **Deterministic where possible.**.
 - **Add proper README** to the code/ you write.
