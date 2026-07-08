@@ -106,6 +106,34 @@ git clone git@github.com:interviewstreet/hackerrank-orchestrate-june26.git
 cd hackerrank-orchestrate-june26
 ```
 
+### 1. Setup Environment
+Ensure you have the required dependencies and your API keys in a `.env` file:
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+# Create a .env file with your API keys, e.g., GEMINI_API_KEY=your_key
+```
+
+### 2. Run the Main Pipeline
+To process all claims from the dataset and generate `output.csv`:
+```bash
+python code/main.py
+```
+
+### 3. Run Evaluation
+To run the automated evaluation on a sample dataset and output performance metrics:
+```bash
+python code/evaluation/main.py
+```
+
+### 4. Interactive Dashboard Demo
+To view a Streamlit UI for visually testing individual claim verifications:
+```bash
+pip install streamlit # (if not already installed)
+streamlit run app.py
+```
+
 You are free to use any language or runtime. Python, JavaScript, and TypeScript are all reasonable choices.
 
 ---
